@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
 require('dotenv').config();
 
 
@@ -23,6 +23,8 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         const serviceCollection = client.db('servicesCar').collection('services');
+        const orderCollection = client.db('servicesCar').collection('orders');
+
         app.get('/services', async (req, res) => {
 
             const query = {}
@@ -36,6 +38,14 @@ async function run() {
             const query = { _id: new ObjectId(id) };
             const service = await serviceCollection.findOne(query);
             res.send(service);
+        });
+
+        //orders api
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await orderCollection.insertOne(order);
+            res.send(result);
+
         })
 
     }
